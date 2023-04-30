@@ -21,7 +21,7 @@ class UserController extends Controller
     public function index(): JsonResponse
     {
         return response()->json([
-            'users' => $this->userRepository->get()
+            'users' => $this->userRepository->get(),
         ]);
     }
 
@@ -41,7 +41,7 @@ class UserController extends Controller
         $rules = [
             'name' => 'required',
             'email' => 'required',
-            'password' => 'required'
+            'password' => 'required',
         ];
 
         $this->userService->create($request->validate($rules));
@@ -52,7 +52,7 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        $closure = $this->userRepository->findWhere(function (Builder $builder)use($id){
+        $closure = $this->userRepository->findWhere(function (Builder $builder) use ($id) {
             $builder->where('id', $id);
         });
 
@@ -61,7 +61,7 @@ class UserController extends Controller
         dd($closure, $array);
 
         return response()->json([
-            $this->userRepository->findOrFail($id)
+            $this->userRepository->findOrFail($id),
         ]);
     }
 

@@ -1,30 +1,30 @@
 <?php
 
-namespace App\Console;
+namespace App\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
 
-class MakeService extends GeneratorCommand
+class MakeModelService extends GeneratorCommand
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'make:service {name}';
+    protected $signature = 'make:model-service {name}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Create a new Service.';
+    protected $description = 'Create a new model Service.';
 
     protected $type = 'Service';
 
     protected function getStub()
     {
-        return base_path('stubs/service.stub');
+        return base_path('stubs/service.model.stub');
     }
 
     protected function getDefaultNamespace($rootNamespace)

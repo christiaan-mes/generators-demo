@@ -32,8 +32,7 @@ Route::get('service/create', function () {
     $userModels = [];
 
     /** @var \App\Models\User $user */
-    foreach ($users as $user)
-    {
+    foreach ($users as $user) {
         $userModels[] = $userService->create([
             'name' => $user->name,
             'email' => $user->email,
@@ -44,4 +43,4 @@ Route::get('service/create', function () {
     dd($userModels);
 });
 
-Route::resource(name:'users', controller:\App\Http\Controllers\UserController::class);
+Route::resource(name: 'users', controller: \App\Http\Controllers\UserController::class);

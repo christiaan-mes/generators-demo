@@ -2,6 +2,7 @@
 
 namespace App\Contracts;
 
+use Closure;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -19,6 +20,8 @@ interface RepositoryContract
 
     public function get(): Collection|array;
 
+    public function getWhere(Closure|array|string $where): Collection|array;
+
     public function getPaginated(int $perPage = 10): LengthAwarePaginator;
 
     public function create(array $attributes): Model;
@@ -28,8 +31,6 @@ interface RepositoryContract
     /**
      * Delete the model from the database.
      *
-     * @param Model $model
-     * @return bool
      *
      * @throws \LogicException
      */

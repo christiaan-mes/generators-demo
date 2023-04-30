@@ -1,0 +1,73 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Repositories\{{ repositoryClassName }};
+use App\Services\{{ serviceClassName }};
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+
+class {{ class }} extends Controller
+{
+    public function __construct(private readonly {{ repositoryClassName }} ${{ repositoryVariable }}, private readonly {{ serviceClassName }} ${{ serviceVariable }})
+    {
+        //
+    }
+
+    public function index()
+    {
+        ${{ resourcePluralVariable }} = $this->{{ repositoryVariable }}->get();
+
+        return view()->make('{{ resourcePlural }}.index', [
+            '{{ resourcePluralVariable }}' => ${{ resourcePluralVariable }}
+        ]);
+    }
+
+    public function create()
+    {
+        return view()->make('{{ resourcePlural }}.create');
+    }
+
+    public function store(Request $request)
+    {
+        $rules = [];
+
+        $this->{{ serviceVariable }}->create($request->validate($rules));
+
+        return redirect()->back();
+    }
+
+    public function show(string $id)
+    {
+        ${{ resourceSingularVariable }} = $this->{{ serviceVariable }}->findOrFail($id);
+
+        return view()->make('{{ resourcePlural }}.show', [
+            '{{ resourceSingularVariable }}' => ${{ resourceSingularVariable }}
+        ]);
+    }
+
+    public function edit(string $id)
+    {
+        ${{ resourceSingularVariable }} = $this->{{ repositoryVariable }}->findOrFail($id);
+
+        return view()->make('{{ resourcePlural }}.edit', [
+            '{{ resourceSingularVariable }}' => ${{ resourceSingularVariable }}
+        ]);
+    }
+
+    public function update(Request $request, string $id)
+    {
+        $rules = [];
+
+        $this->{{ serviceVariable }}->update($id, $request->validate($rules));
+
+        return redirect()->back();
+    }
+
+    public function destroy(string $id)
+    {
+        $this->{{ serviceVariable }}->delete($id);
+
+        return redirect()->back();
+    }
+}
