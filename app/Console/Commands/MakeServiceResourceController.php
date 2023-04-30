@@ -14,7 +14,7 @@ class MakeServiceResourceController extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'make:service-resource {name}';
+    protected $signature = 'make:service-resource {name} {--force}';
 
     /**
      * The console command description.
@@ -39,24 +39,51 @@ class MakeServiceResourceController extends GeneratorCommand
     {
         $controller = class_basename($name);
 
-        $resourceName = Str::of($controller)->remove('Controller')->toString();
+        $resourceName = Str::of($controller)->remove('Controller')->singular()->toString();
 
-        $singular = Str::singular($resourceName);
         $plural = Str::plural($resourceName);
 
         $serviceName = $resourceName.'Service';
         $repositoryName = $resourceName.'Repository';
+        $factoryName = $resourceName . 'Factory';
+        $seederName = $resourceName . 'Seeder';
 
-        $repositoryExists = File::exists(app_path('Repositories/'.$repositoryName));
+        if (! File::exists(app_path('Models/'.$resourceName))) {
+            Artisan::call('make:model --factory --seed '.$resourceName);
+        }
 
-        if (! $repositoryExists) {
+        $migrationName = 'create_'.Str::lower($plural).'_table';
+
+        if (! File::exists(database_path('migrations/' . $migrationName))) {
+            Artisan::call('make:migration '.$migrationName);
+
+            $this->components->info(sprintf('Migration [%s] created successfully', 'database/migrations/' . $seederName));
+        }
+
+        if (!File::exists(database_path('factories/'.$factoryName))) {
+            Artisan::call('make:factory '.$factoryName);
+
+            $this->components->info(sprintf('Factory [%s] created successfully', 'database/factories/' . $seederName));
+        }
+
+        if (! File::exists(database_path('seeders/'.$seederName))) {
+            Artisan::call('make:seeder '.$seederName);
+
+            $this->components->info(sprintf('Seeder [%s] created successfully', 'database/seeders/' . $seederName));
+        }
+
+        if (! File::exists(app_path('Repositories/'.$repositoryName))) {
             Artisan::call('make:repository '.$repositoryName);
+
+            $this->components->info(sprintf('Service [%s] created successfully', 'app/Repositories/' . $serviceName));
         }
 
         $serviceExists = File::exists(app_path('Services/'.$repositoryName));
 
         if (! $serviceExists) {
             Artisan::call('make:model-service '.$serviceName);
+
+            $this->components->info(sprintf('Service [%s] created successfully', 'app/Services/' . $serviceName));
         }
 
         $replace = [
@@ -65,8 +92,8 @@ class MakeServiceResourceController extends GeneratorCommand
             '{{ repositoryVariable }}' => Str::camel($repositoryName),
             '{{ serviceVariable }}' => Str::camel($serviceName),
             '{{ resourcePlural }}' => Str::lower($plural),
-            '{{ resourceSingular }}' => Str::lower($singular),
-            '{{ resourceSingularVariable }}' => Str::camel($singular),
+            '{{ resourceSingular }}' => Str::lower($resourceName),
+            '{{ resourceSingularVariable }}' => Str::camel($resourceName),
             '{{ resourcePluralVariable }}' => Str::camel($plural),
         ];
 

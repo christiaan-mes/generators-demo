@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
 use App\Repositories\UserRepository;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Route;
@@ -43,4 +45,5 @@ Route::get('service/create', function () {
     dd($userModels);
 });
 
-Route::resource(name: 'users', controller: \App\Http\Controllers\UserController::class);
+Route::resource(name: 'users', controller: UserController::class);
+Route::resource(name: 'posts', controller: PostController::class);

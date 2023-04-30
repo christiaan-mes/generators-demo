@@ -39,7 +39,7 @@ class {{ class }} extends Controller
 
     public function show(string $id)
     {
-        ${{ resourceSingularVariable }} = $this->{{ serviceVariable }}->findOrFail($id);
+        ${{ resourceSingularVariable }} = $this->{{ repositoryVariable }}->findOrFail($id);
 
         return view()->make('{{ resourcePlural }}.show', [
             '{{ resourceSingularVariable }}' => ${{ resourceSingularVariable }}
